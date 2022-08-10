@@ -1,7 +1,7 @@
 # Example App
 
 ![codeql](https://github.com/cam3ron2/example-app/actions/workflows/codeql.yml/badge.svg)
-[![tests](https://github.com/cam3ron2/example-app/actions/workflows/auto-assign.yml/badge.svg)](https://github.com/cam3ron2/example-app/actions/workflows/tests.yml)
+[![tests](https://github.com/cam3ron2/example-app/actions/workflows/tests.yml/badge.svg)](https://github.com/cam3ron2/example-app/actions/workflows/tests.yml)
 <!-- [![build](https://github.com/cam3ron2/example-app/actions/workflows/build-app.yml/badge.svg)](https://github.com/cam3ron2/example-app/actions/workflows/build-app.yml) -->
 <!-- ![downloads](https://img.shields.io/github/downloads/cam3ron2/example-app/v1.0.6/total) -->
 ![License](https://img.shields.io/github/license/cam3ron2/example-app)
