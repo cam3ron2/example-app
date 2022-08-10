@@ -6,7 +6,7 @@
 <!-- ![downloads](https://img.shields.io/github/downloads/cam3ron2/example-app/v1.0.6/total) -->
 ![License](https://img.shields.io/github/license/cam3ron2/example-app)
 ![Language](https://img.shields.io/badge/language-Go-blue.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/cam3ron2/example-app)](https://goreportcard.com/report/github.com/cam3ron2/example-app)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cam3ron2/example-app/src)](https://goreportcard.com/report/github.com/cam3ron2/example-app/src)
 
 A lightweight golang webserver and client useful for testing and demos.
 

@@ -38,13 +38,13 @@ var serverCmd = &cobra.Command{
 			port: port,
 			name: "Server",
 		}
-	
+
 		server.logger = server.NewLogger()
 		server.router = server.NewRouter()
 		server.router.Handle("/", index(delay, fail))
 		server.router.Handle("/healthz", healthz(failHealth))
 		server.logger.Printf("Starting %v on port :%v", server.name, server.port)
-	
+
 		server.Serve()
 	},
 }
