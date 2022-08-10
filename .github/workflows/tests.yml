@@ -13,6 +13,6 @@ jobs:
         with:
           go-version: 1.19
       - name: Run Tests
-        shell: /usr/bin/env bash -e {0}
+        shell: /bin/bash -e {0}
         working-directory: src/
         run: go test ./...
