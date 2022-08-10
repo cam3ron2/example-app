@@ -37,7 +37,7 @@ import (
 )
 
 type (
-	key    int
+	key          int
 	RLHTTPClient struct {
 		client      *http.Client
 		Ratelimiter *timerate.Limiter

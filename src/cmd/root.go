@@ -27,11 +27,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "example-app",
+	Use:  "example-app",
 	Long: `A lightweight golang webserver/client useful for testing.`,
 }
 

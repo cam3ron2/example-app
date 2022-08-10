@@ -57,7 +57,7 @@ var workerCmd = &cobra.Command{
 
 		// allow rate of `rate` requests per second and disallow initial burst
 		rateLimit := timerate.NewLimiter(timerate.Limit(rate), 1)
-		
+
 		// instantiate client
 		client := newClient(rateLimit)
 		ctx := context.Background()
