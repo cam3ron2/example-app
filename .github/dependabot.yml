@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod" # See documentation for possible values
+    directory: "src/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "cam3ron2"
+    labels:
+      - "go"
+      - "dependencies"
+    open-pull-requests-limit: 1
