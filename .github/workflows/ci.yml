@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Build/Test/Push
-        uses: cam3ron2/build-action@v0.11
+        uses: cam3ron2/build-action@v0.12
         with:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
