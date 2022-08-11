@@ -1,0 +1,44 @@
+name: "CI"
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Build/Test/Push
+        uses: cam3ron2/build-action@v0.1
+        with:
+          registry: ghcr.io
+          repository: cam3ron2/example-app
+      # - name: build
+      #   uses: nielsen/actions/build@v1
+      # - name: wiz
+      #   uses: nielsen/actions/wiz@v1
+      # - name: snyk
+      #   uses: nielsen/actions/snyk@v1
+      # - name: publish
+      #   uses: nielsen/actions/publish@v1
+      # - name: deploy
+      #   uses: nielsen/actions/deploy@v1
+# name="$(basename $(pwd))"
+# cd ./src/
+# echo "Building dist/${name} for linux/amd64..."
+# env GOOS=linux GOARCH=amd64 go build -o ../dist/${name}-linux-amd64 .
+# echo "Building dist/${name} for linux/arm64..."
+# env GOOS=linux GOARCH=arm64 go build -o ../dist/${name}-linux-arm64 .
+# echo "Building dist/${name} for darwin/amd64..."
+# env GOOS=darwin GOARCH=amd64 go build -o ../dist/${name}-darwin-amd64 .
+# echo "Building dist/${name} for darwin/arm64..."
+# env GOOS=darwin GOARCH=arm64 go build -o ../dist/${name}-darwin-arm64 .
+# cd ../
