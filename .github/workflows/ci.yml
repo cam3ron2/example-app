@@ -17,10 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Build/Test/Push
-        uses: cam3ron2/build-action@v0.6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: cam3ron2/build-action@v0.7
         with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           repository: cam3ron2/example-app
       # - name: build
