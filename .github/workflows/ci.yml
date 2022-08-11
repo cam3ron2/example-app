@@ -17,12 +17,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Build/Test/Push
-        uses: cam3ron2/build-action@v0.9
+        uses: cam3ron2/build-action@v0.10
         with:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           repository: cam3ron2/example-app
+          language: golang
       # - name: build
       #   uses: nielsen/actions/build@v1
       # - name: wiz
