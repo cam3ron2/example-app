@@ -12,12 +12,11 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Build/Test/Push
-        uses: cam3ron2/build-action@v0.2
+        uses: cam3ron2/build-action@v0.3
         with:
           registry: ghcr.io
           repository: cam3ron2/example-app
