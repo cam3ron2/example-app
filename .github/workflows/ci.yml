@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Build/Test/Push
-        uses: cam3ron2/build-action@v0.5
+        uses: cam3ron2/build-action@v0.6
         with:
           registry: ghcr.io
           repository: cam3ron2/example-app
