@@ -7,6 +7,7 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+
 jobs:
   build_test:
     name: Build and Test
@@ -17,6 +18,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Build/Test/Push
         uses: cam3ron2/build-action@v0.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           registry: ghcr.io
           repository: cam3ron2/example-app
