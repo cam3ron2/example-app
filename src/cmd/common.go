@@ -219,13 +219,14 @@ func tracing(nextRequestID func() string) func(http.Handler) http.Handler {
 // creates a single rate-limited client
 func newClient(rateLimit *timerate.Limiter) *RLHTTPClient {
 	return &RLHTTPClient{
-		client:      http.DefaultClient,
+		client:      &http.Client{
+			Timeout:     5 * time.Second,
+		},
 		Ratelimiter: rateLimit,
 	}
 }
 
 func (c *RLHTTPClient) Do(url string, percentage int, logger *log.Logger) {
-	// defer workerGroup.Done()
 	var req = &Request{
 		id: randString(6),
 	}
@@ -235,7 +236,6 @@ func (c *RLHTTPClient) Do(url string, percentage int, logger *log.Logger) {
 	req.R, _ = http.NewRequest("GET", url, nil)
 	req.r, req.e = c.client.Do(req.R)
 	req.logReq(logger)
-	defer req.r.Body.Close()
 }
 
 func (req Request) logReq(logger *log.Logger) {
@@ -244,6 +244,7 @@ func (req Request) logReq(logger *log.Logger) {
 		return
 	}
 	logger.Printf("[%v][%v] -> [%s] %s", req.r.Request.Method, req.r.Request.URL, strconv.Itoa(req.r.StatusCode), req.r.Header.Get("X-Request-Duration"))
+	defer req.r.Body.Close()
 }
 
 func randString(n int) string {
