@@ -23,6 +23,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 // serverCmd represents the server command
@@ -34,6 +35,11 @@ var serverCmd = &cobra.Command{
 		delay, _ := cmd.Flags().GetInt("delay")
 		fail, _ := cmd.Flags().GetInt("fail")
 		failHealth, _ := cmd.Flags().GetInt("health-fail")
+		datadog, _ := cmd.Flags().GetBool("datadog")
+		// Initialize DataDog tracing
+		if datadog {
+			tracer.Start()
+		}
 		server := &Server{
 			port: port,
 			name: "Server",
@@ -46,6 +52,9 @@ var serverCmd = &cobra.Command{
 		server.logger.Printf("Starting %v on port :%v", server.name, server.port)
 
 		server.Serve()
+		if datadog {
+			defer tracer.Stop()
+		}
 	},
 }
 
