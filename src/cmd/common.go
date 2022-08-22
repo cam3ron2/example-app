@@ -34,6 +34,7 @@ import (
 	"unsafe"
 
 	timerate "golang.org/x/time/rate"
+	httptrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 )
 
 type (
@@ -49,10 +50,11 @@ type (
 		id string
 	}
 	Server struct {
-		name   string
-		port   int
-		logger *log.Logger
-		router *http.ServeMux
+		name    string
+		port    int
+		logger  *log.Logger
+		router  *http.ServeMux
+		datadog bool
 	}
 	App interface {
 		Start()
@@ -84,19 +86,31 @@ func (s Server) NewRouter() *http.ServeMux {
 }
 
 func (s Server) Serve() {
+	var server = &http.Server{}
 	nextRequestID := func() string {
 		return strconv.FormatInt(time.Now().UnixNano(), 10)
 	}
 
 	// instantiate server
 	listenAddr := ":" + strconv.Itoa(s.port)
-	server := &http.Server{
-		Addr:         listenAddr,
-		Handler:      tracing(nextRequestID)(logResp(s.logger)(s.router)),
-		ErrorLog:     s.logger,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  15 * time.Second,
+	if s.datadog {
+		server = &http.Server{
+			Addr:         listenAddr,
+			Handler:      tracing(nextRequestID)(logResp(s.logger)(s.router)),
+			ErrorLog:     s.logger,
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+			IdleTimeout:  15 * time.Second,
+		}
+	} else {
+		server = &http.Server{
+			Addr:         listenAddr,
+			Handler:      tracing(nextRequestID)(logResp(s.logger)(s.router)),
+			ErrorLog:     s.logger,
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+			IdleTimeout:  15 * time.Second,
+		}
 	}
 
 	done := make(chan bool)
@@ -219,8 +233,8 @@ func tracing(nextRequestID func() string) func(http.Handler) http.Handler {
 // creates a single rate-limited client
 func newClient(rateLimit *timerate.Limiter) *RLHTTPClient {
 	return &RLHTTPClient{
-		client:      &http.Client{
-			Timeout:     5 * time.Second,
+		client: &http.Client{
+			Timeout: 5 * time.Second,
 		},
 		Ratelimiter: rateLimit,
 	}
@@ -262,4 +276,16 @@ func randString(n int) string {
 	}
 
 	return *(*string)(unsafe.Pointer(&b))
+}
+
+func datadogTraceMiddleware(mux *http.ServeMux, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, route := mux.Handler(r)
+		resource := r.Method + " " + route
+		httptrace.TraceAndServe(next, w, r, &httptrace.ServeConfig{
+			Service:     "http.router",
+			Resource:    resource,
+			QueryParams: true,
+		})
+	})
 }

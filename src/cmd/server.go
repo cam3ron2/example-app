@@ -43,14 +43,20 @@ var serverCmd = &cobra.Command{
 		server := &Server{
 			port: port,
 			name: "Server",
+			datadog: datadog,
 		}
 
 		server.logger = server.NewLogger()
 		server.router = server.NewRouter()
-		server.router.Handle("/", index(delay, fail))
-		server.router.Handle("/healthz", healthz(failHealth))
 		server.logger.Printf("Starting %v on port :%v", server.name, server.port)
-
+		if datadog {
+			server.router.Handle("/", datadogTraceMiddleware(server.router, index(delay, fail)))
+			server.router.Handle("/healthz", datadogTraceMiddleware(server.router, healthz(failHealth)))
+		} else {
+			server.router.Handle("/", index(delay, fail))
+			server.router.Handle("/healthz", healthz(failHealth))
+		}
+		
 		server.Serve()
 		if datadog {
 			defer tracer.Stop()

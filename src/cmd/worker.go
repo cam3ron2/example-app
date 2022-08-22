@@ -52,14 +52,21 @@ var workerCmd = &cobra.Command{
 		server := &Server{
 			port: localPort,
 			name: "Worker",
+			datadog: datadog,
 		}
 
 		// instantiate server
 		server.logger = server.NewLogger()
 		server.router = server.NewRouter()
 		server.logger.Printf("Starting %v on port :%v", server.name, server.port)
-		server.router.Handle("/", notFound(time.Now()))
-		server.router.Handle("/healthz", healthz(failHealth))
+		if datadog {
+			server.router.Handle("/", datadogTraceMiddleware(server.router, notFound(time.Now())))
+			server.router.Handle("/healthz", datadogTraceMiddleware(server.router, healthz(failHealth)))
+		} else {
+			server.router.Handle("/", notFound(time.Now()))
+			server.router.Handle("/healthz", healthz(failHealth))
+		}
+
 
 		// allow rate of `rate` requests per second and disallow initial burst
 		rateLimit := timerate.NewLimiter(timerate.Limit(rate), 1)
