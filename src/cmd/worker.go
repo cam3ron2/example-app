@@ -29,6 +29,7 @@ import (
 	timerate "golang.org/x/time/rate"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/DataDog/dd-trace-go.v1/profiler"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
@@ -45,10 +46,7 @@ var workerCmd = &cobra.Command{
 		failHealth, _ := cmd.Flags().GetInt("health-fail")
 		urlString := url + ":" + strconv.Itoa(port) + "/"
 		datadog, _ := cmd.Flags().GetBool("datadog")
-		// Initialize DataDog tracing
-		if datadog {
-			tracer.Start()
-		}
+
 		server := &Server{
 			port: localPort,
 			name: "Worker",
@@ -58,6 +56,16 @@ var workerCmd = &cobra.Command{
 		// instantiate server
 		server.logger = server.NewLogger()
 		server.router = server.NewRouter()
+		// Initialize DataDog tracing
+		if datadog {
+			tracer.Start()
+			defer tracer.Stop()
+			err := profiler.Start()
+			if err != nil {
+				server.logger.Fatal(err)
+			}
+			defer profiler.Stop()
+		}
 		server.logger.Printf("Starting %v on port :%v", server.name, server.port)
 		if datadog {
 			server.router.Handle("/", datadogTraceMiddleware(server.router, notFound(time.Now())))
@@ -85,9 +93,6 @@ var workerCmd = &cobra.Command{
 		}()
 
 		server.Serve()
-		if datadog {
-			defer tracer.Stop()
-		}
 	},
 }
 
