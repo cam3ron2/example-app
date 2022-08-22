@@ -42,4 +42,8 @@ func Execute() {
 	}
 }
 
-func init() {}
+func init() {
+	rootCmd.PersistentFlags().BoolP("datadog", "D", false, "Enable DataDog trace collection")
+	// for instructions on which env vars to populate to configure DataDog
+	// see https://docs.datadoghq.com/tracing/trace_collection/library_config/go/
+}
