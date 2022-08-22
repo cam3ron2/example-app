@@ -26,6 +26,9 @@ Flags:
   -h, --help              help for server
   -p, --port int          port to listen on (default 8080)
 
+Global Flags:
+  -D, --datadog   Enable DataDog trace collection
+
 $ example-app server
 [Server] 2022/08/10 13:00:34 Starting Server on port :8080
 [Server] 2022/08/10 13:00:34 Server is ready to handle requests at :8080
@@ -49,10 +52,15 @@ Flags:
   -r, --rate int          rate of requests per second (default 1)
   -u, --url string        target URL (default "http://localhost")
 
+Global Flags:
+  -D, --datadog   Enable DataDog trace collection
+
 $ example-app worker
 [Worker] 2022/08/10 13:02:31 Starting Worker on port :8081
 [Worker] 2022/08/10 13:02:31 Server is ready to handle requests at :8081
 ```
+
+## DataDog Configuration
 
 ## TODO
 
