@@ -22,6 +22,8 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 	"gopkg.in/DataDog/dd-trace-go.v1/profiler"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
@@ -37,7 +39,7 @@ var serverCmd = &cobra.Command{
 		fail, _ := cmd.Flags().GetInt("fail")
 		failHealth, _ := cmd.Flags().GetInt("health-fail")
 		datadog, _ := cmd.Flags().GetBool("datadog")
-		
+
 		server := &Server{
 			port: port,
 			name: "Server",
@@ -48,9 +50,19 @@ var serverCmd = &cobra.Command{
 		server.router = server.NewRouter()
 		// Initialize DataDog tracing
 		if datadog {
-			tracer.Start()
+			tracer.Start(
+				tracer.WithLogStartup(true),
+				tracer.WithService("example-server"),
+				tracer.WithUniversalVersion(os.Getenv("DD_VERSION")),
+				tracer.WithEnv(os.Getenv("DD_ENV")),
+			)
 			defer tracer.Stop()
-			err := profiler.Start()
+			err := profiler.Start(
+				profiler.WithLogStartup(true),
+				profiler.WithService("example-server"),
+				profiler.WithVersion(os.Getenv("DD_VERSION")),
+				profiler.WithEnv(os.Getenv("DD_ENV")),
+			)
 			if err != nil {
 				server.logger.Fatal(err)
 			}

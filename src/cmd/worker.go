@@ -25,6 +25,7 @@ import (
 	"context"
 	"strconv"
 	"time"
+	"os"
 
 	timerate "golang.org/x/time/rate"
 
@@ -58,9 +59,19 @@ var workerCmd = &cobra.Command{
 		server.router = server.NewRouter()
 		// Initialize DataDog tracing
 		if datadog {
-			tracer.Start()
+			tracer.Start(
+				tracer.WithLogStartup(true),
+				tracer.WithService("example-worker"),
+				tracer.WithUniversalVersion(os.Getenv("DD_VERSION")),
+				tracer.WithEnv(os.Getenv("DD_ENV")),
+			)
 			defer tracer.Stop()
-			err := profiler.Start()
+			err := profiler.Start(
+				profiler.WithLogStartup(true),
+				profiler.WithService("example-worker"),
+				profiler.WithVersion(os.Getenv("DD_VERSION")),
+				profiler.WithEnv(os.Getenv("DD_ENV")),
+			)
 			if err != nil {
 				server.logger.Fatal(err)
 			}
