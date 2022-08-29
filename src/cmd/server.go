@@ -52,14 +52,14 @@ var serverCmd = &cobra.Command{
 		if datadog {
 			tracer.Start(
 				tracer.WithLogStartup(true),
-				tracer.WithService("example-server"),
+				tracer.WithService(os.Getenv("DD_SERVICE")),
 				tracer.WithUniversalVersion(os.Getenv("DD_VERSION")),
 				tracer.WithEnv(os.Getenv("DD_ENV")),
 			)
 			defer tracer.Stop()
 			err := profiler.Start(
 				profiler.WithLogStartup(true),
-				profiler.WithService("example-server"),
+				profiler.WithService(os.Getenv("DD_SERVICE")),
 				profiler.WithVersion(os.Getenv("DD_VERSION")),
 				profiler.WithEnv(os.Getenv("DD_ENV")),
 			)
@@ -70,8 +70,8 @@ var serverCmd = &cobra.Command{
 		}
 		server.logger.Printf("Starting %v on port :%v", server.name, server.port)
 		if datadog {
-			server.router.Handle("/", datadogTraceMiddleware(server.router, index(delay, fail)))
-			server.router.Handle("/healthz", datadogTraceMiddleware(server.router, healthz(failHealth)))
+			server.router.Handle("/", datadogTraceMiddleware(server.router, index(delay, fail), os.Getenv("DD_SERVICE")))
+			server.router.Handle("/healthz", datadogTraceMiddleware(server.router, healthz(failHealth), os.Getenv("DD_SERVICE")))
 		} else {
 			server.router.Handle("/", index(delay, fail))
 			server.router.Handle("/healthz", healthz(failHealth))

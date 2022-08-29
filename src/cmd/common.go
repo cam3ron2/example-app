@@ -278,12 +278,12 @@ func randString(n int) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-func datadogTraceMiddleware(mux *http.ServeMux, next http.Handler) http.Handler {
+func datadogTraceMiddleware(mux *http.ServeMux, next http.Handler, service string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, route := mux.Handler(r)
 		resource := r.Method + " " + route
 		httptrace.TraceAndServe(next, w, r, &httptrace.ServeConfig{
-			Service:     "http.router",
+			Service:     service,
 			Resource:    resource,
 			QueryParams: true,
 		})
