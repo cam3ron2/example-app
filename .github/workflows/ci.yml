@@ -22,3 +22,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           repository: cam3ron2/example-app
+          trivy: "true"
