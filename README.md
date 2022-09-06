@@ -66,5 +66,5 @@ $ example-app worker
 
 - Add completion
 - Finish writing tests
-
+- finish deploy automation
 
